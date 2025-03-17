@@ -1,45 +1,13 @@
-package br.edu.ifpi.biblioteca.entity;
+package br.edu.ifpi.biblioteca.Dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-@Entity
-@Table(name = "livros")
-public class Livro {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    @Column(nullable = false)
+public class LivroDto {
     private String titulo;
-
-    @NotNull
-    @Column(nullable = false)
     private int ano;
-
-    @NotBlank
-    @Column(nullable = false)
     private String editora;
-
-    @NotBlank
-    @Column(nullable = false)
     private String autor;
-
-    @Column(nullable = false)
-    private boolean disponivel = true; // Valor padrão para novos livros
+    private boolean disponivel;
 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitulo() {
         return titulo;
     }

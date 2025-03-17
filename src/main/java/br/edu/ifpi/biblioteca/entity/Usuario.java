@@ -1,43 +1,39 @@
+
 package br.edu.ifpi.biblioteca.entity;
 
-import br.edu.ifpi.biblioteca.Dto.UsuarioDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @NotBlank(message = "O nome não pode estar em branco")
+    @Column(nullable = false)
     private String nome;
+
+    @NotBlank(message = "O CPF não pode estar em branco")
+    @Column(nullable = false, unique = true)
+    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos")
     private String cpf;
+
+    @NotBlank(message = "O e-mail não pode estar em branco")
+    @Column(nullable = false, unique = true)
+    @Email(message = "O e-mail deve ser válido")
     private String email;
-   
-    public Usuario() {}
 
-    public Usuario(Long id, String nome, String cpf, String email, String preferenciaNotificacao) {
-        this.id = id;
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        
-    }
-
-    public Usuario(UsuarioDto usuarioDto) {
-        this.nome = usuarioDto.nome();
-        this.cpf = usuarioDto.cpf(); // Adicione esta linha para atribuir o CPF
-        this.email = usuarioDto.email();
-    }
-
-    public long getId() {
+    // Getters e Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,6 +60,4 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
-
-   
 }

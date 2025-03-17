@@ -1,28 +1,44 @@
 package br.edu.ifpi.biblioteca.Dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Email;
 
-public record UsuarioDto(
-    @NotBlank(message = "O nome é obrigatório")
-    String nome,
+public class UsuarioDto {
 
-    @NotBlank(message = "O CPF é obrigatório")
-    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "CPF deve estar no formato 123.456.789-09")
-    String cpf,
+    @NotBlank(message = "O nome não pode estar em branco")
+    private String nome;
 
-    @NotBlank(message = "O email é obrigatório")
-    @Email(message = "O email deve ser válido")
-    String email
-) {}
+    @NotBlank(message = "O CPF não pode estar em branco")
+    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter 11 dígitos numéricos")
+    private String cpf;
 
-// package br.edu.ifpi.biblioteca.Dto;
-// import jakarta.validation.constraints.Email;
-// import jakarta.validation.constraints.NotBlank;
+    @NotBlank(message = "O e-mail não pode estar em branco")
+    @Email(message = "O e-mail deve ser válido")
+    private String email;
 
-// public record UsuarioDto (@NotBlank  String nome, String cpf, @NotBlank @Email String email){
+    // Getters e Setters
+    public String getNome() {
+        return nome;
+    }
 
-// }
-    
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
