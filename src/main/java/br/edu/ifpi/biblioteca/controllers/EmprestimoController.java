@@ -1,6 +1,5 @@
 package br.edu.ifpi.biblioteca.controllers;
 
-import br.edu.ifpi.biblioteca.Dto.EmprestimoDto;
 import br.edu.ifpi.biblioteca.entity.Emprestimo;
 import br.edu.ifpi.biblioteca.entity.Livro;
 import br.edu.ifpi.biblioteca.entity.Usuario;
@@ -8,11 +7,10 @@ import br.edu.ifpi.biblioteca.repository.EmprestimoRepository;
 import br.edu.ifpi.biblioteca.repository.LivroRepository;
 import br.edu.ifpi.biblioteca.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/emprestimos")
@@ -27,20 +25,30 @@ public class EmprestimoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // GET: Listar todos os empréstimos
+    @GetMapping
+    public List<Emprestimo> listarEmprestimos() {
+        return emprestimoRepository.findAll();
+    }
+
+    // GET: Buscar um empréstimo por ID
+    @GetMapping("/{id}")
+    public Emprestimo buscarEmprestimoPorId(@PathVariable Long id) {
+        return emprestimoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado com o ID: " + id));
+    }
+
+    // POST: Realizar um novo empréstimo
     @PostMapping
-    public Emprestimo realizarEmprestimo(@RequestBody EmprestimoDto emprestimoDto) {
-        Livro livro = livroRepository.findById((long) emprestimoDto.getLivroId()).orElseThrow();
-        Usuario usuario = usuarioRepository.findById((long) emprestimoDto.getUsuarioId()).orElseThrow();
+    public Emprestimo realizarEmprestimo(@RequestBody Emprestimo emprestimo) {
+        Livro livro = livroRepository.findById(emprestimo.getLivro().getId())
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado com o ID: " + emprestimo.getLivro().getId()));
+        Usuario usuario = usuarioRepository.findById(emprestimo.getUsuario().getId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + emprestimo.getUsuario().getId()));
 
         if (!livro.isDisponivel()) {
             throw new RuntimeException("Livro não está disponível para empréstimo");
         }
-
-        Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setLivro(livro);
-        emprestimo.setUsuario(usuario);
-        emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
-        emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
 
         livro.setDisponivel(false);
         livroRepository.save(livro);
@@ -48,26 +56,26 @@ public class EmprestimoController {
         return emprestimoRepository.save(emprestimo);
     }
 
-    @GetMapping
-    public List<Emprestimo> listarEmprestimos() {
-        return emprestimoRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Emprestimo> buscarEmprestimoPorId(@PathVariable Long id) {
+    // PUT: Atualizar um empréstimo existente
+    @PutMapping("/{id}")
+    public Emprestimo atualizarEmprestimo(@PathVariable Long id, @RequestBody Emprestimo emprestimoAtualizado) {
         return emprestimoRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(404).body(null));
+                .map(emprestimo -> {
+                    emprestimo.setDataEmprestimo(emprestimoAtualizado.getDataEmprestimo());
+                    emprestimo.setDataDevolucao(emprestimoAtualizado.getDataDevolucao());
+                    emprestimo.setLivro(emprestimoAtualizado.getLivro());
+                    emprestimo.setUsuario(emprestimoAtualizado.getUsuario());
+                    return emprestimoRepository.save(emprestimo);
+                })
+                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado com o ID: " + id));
     }
 
+    // DELETE: Remover um empréstimo por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarEmprestimo(@PathVariable Long id) {
-        Optional<Emprestimo> emprestimo = emprestimoRepository.findById(id);
-        if (emprestimo.isPresent()) {
-            emprestimoRepository.deleteById(id);
-            return ResponseEntity.ok("Empréstimo deletado com sucesso!");
-        } else {
-            return ResponseEntity.status(404).body("Empréstimo não encontrado.");
+    public void removerEmprestimo(@PathVariable Long id) {
+        if (!emprestimoRepository.existsById(id)) {
+            throw new RuntimeException("Empréstimo não encontrado com o ID: " + id);
         }
+        emprestimoRepository.deleteById(id);
     }
 }

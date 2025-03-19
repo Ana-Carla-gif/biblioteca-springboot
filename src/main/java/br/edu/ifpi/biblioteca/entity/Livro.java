@@ -29,7 +29,7 @@ public class Livro {
     private String autor;
 
     @Column(nullable = false)
-    private boolean disponivel = true; // Valor padrão para novos livros
+    private boolean disponivel = true;
 
     // Getters e Setters
     public Long getId() {
@@ -78,5 +78,16 @@ public class Livro {
 
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
+    }
+
+    
+    public static Livro criarLivro(String titulo, int ano, String editora, String autor, boolean disponivel) {
+        Livro livro = new Livro();
+        livro.setTitulo(titulo);
+        livro.setAno(ano);
+        livro.setEditora(editora);
+        livro.setAutor(autor);
+        livro.setDisponivel(disponivel);
+        return livro;
     }
 }

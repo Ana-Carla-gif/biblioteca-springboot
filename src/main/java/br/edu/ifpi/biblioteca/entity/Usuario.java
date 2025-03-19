@@ -28,7 +28,6 @@ public class Usuario {
     @Email(message = "O e-mail deve ser válido")
     private String email;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -59,5 +58,14 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+   
+    public static Usuario criarUsuario(String nome, String cpf, String email) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(nome);
+        usuario.setCpf(cpf);
+        usuario.setEmail(email);
+        return usuario;
     }
 }

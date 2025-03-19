@@ -70,4 +70,14 @@ public class Emprestimo {
     public void setLivro(Livro livro) {
         this.livro = livro;
     }
+
+    // Método para criar um empréstimo a partir de dados básicos
+    public static Emprestimo criarEmprestimo(LocalDate dataEmprestimo, LocalDate dataDevolucao, Usuario usuario, Livro livro) {
+        Emprestimo emprestimo = new Emprestimo();
+        emprestimo.setDataEmprestimo(dataEmprestimo);
+        emprestimo.setDataDevolucao(dataDevolucao);
+        emprestimo.setUsuario(usuario);
+        emprestimo.setLivro(livro);
+        return emprestimo;
+    }
 }
