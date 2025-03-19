@@ -9,7 +9,7 @@ import br.edu.ifpi.biblioteca.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-// import java.time.LocalDate;
+
 import java.util.List;
 
 @RestController
@@ -25,20 +25,20 @@ public class EmprestimoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // GET: Listar todos os empréstimos
+    
     @GetMapping
     public List<Emprestimo> listarEmprestimos() {
         return emprestimoRepository.findAll();
     }
 
-    // GET: Buscar um empréstimo por ID
+ 
     @GetMapping("/{id}")
     public Emprestimo buscarEmprestimoPorId(@PathVariable Long id) {
         return emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado com o ID: " + id));
     }
 
-    // POST: Realizar um novo empréstimo
+
     @PostMapping
     public Emprestimo realizarEmprestimo(@RequestBody Emprestimo emprestimo) {
         Livro livro = livroRepository.findById(emprestimo.getLivro().getId())
@@ -56,7 +56,7 @@ public class EmprestimoController {
         return emprestimoRepository.save(emprestimo);
     }
 
-    // PUT: Atualizar um empréstimo existente
+   
     @PutMapping("/{id}")
     public Emprestimo atualizarEmprestimo(@PathVariable Long id, @RequestBody Emprestimo emprestimoAtualizado) {
         return emprestimoRepository.findById(id)
@@ -70,7 +70,6 @@ public class EmprestimoController {
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado com o ID: " + id));
     }
 
-    // DELETE: Remover um empréstimo por ID
     @DeleteMapping("/{id}")
     public void removerEmprestimo(@PathVariable Long id) {
         if (!emprestimoRepository.existsById(id)) {
